@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coherencia Total: Equipos Inteligentes</title>
+    <style>
+        :root {
+            --bg-primary: #0f172a;
+            --bg-card: #1e293b;
+            --text-main: #f8fafc;
+            --coherente: #10b981;
+            --incoherente: #ef4444;
+            --callado: #f59e0b;
+            --accent: #6366f1;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            position: relative;
+        }
+
+        h1 {
+            text-align: center;
+            color: #fff;
+            margin-bottom: 20px;
+            font-size: 2.2rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-bottom: 3px solid var(--accent);
+            padding-bottom: 10px;
+        }
+
+        .author-box {
+            text-align: center;
+            margin: -5px auto 25px auto;
+            font-size: 0.95rem;
+            color: #cbd5e1;
+            background: rgba(15, 23, 42, 0.5);
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: 1px dashed #475569;
+            max-width: fit-content;
+        }
+
+        .author-box strong {
+            color: var(--accent);
+        }
+
+        /* Dashboard de Métricas */
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .metric-card {
+            background: rgba(15, 23, 42, 0.6);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid #334155;
+            position: relative;
+        }
+
+        .metric-title {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            color: #94a3b8;
+            margin-bottom: 5px;
+        }
+
+        .metric-value {
+            font-size: 1.6rem;
+            font-weight: bold;
+        }
+
+        .progress-bar-container {
+            background: #334155;
+            border-radius: 6px;
+            height: 12px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 50%;
+            transition: width 0.4s ease, background-color 0.4s ease;
+        }
+
+        /* Guía de respiración */
+        .breathing-box {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+        }
+
+        .breathing-circle {
+            width: 60px;
+            height: 60px;
+            background: rgba(99, 102, 241, 0.2);
+            border: 4px solid var(--accent);
+            border-radius: 50%;
+            animation: breathe 5s infinite ease-in-out;
+        }
+
+        @keyframes breathe {
+            0%, 100% { transform: scale(1); background: rgba(99, 102, 241, 0.2); }
+            50% { transform: scale(1.5); background: rgba(16, 185, 129, 0.4); border-color: var(--coherente); }
+        }
+
+        /* Área de Situación y Paneles */
+        .situation-panel {
+            background: #0f172a;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            border-left: 5px solid var(--accent);
+        }
+
+        .character-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            background: var(--accent);
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .situation-text {
+            font-size: 1.15rem;
+            line-height: 1.6;
+            font-style: italic;
+        }
+
+        .panel-title {
+            font-size: 1.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        /* Opciones de Respuesta */
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-btn {
+            background: #334155;
+            color: var(--text-main);
+            border: 2px solid transparent;
+            padding: 16px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: left;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+        }
+
+        .option-btn:hover {
+            background: #475569;
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        /* Temporizador */
+        .timer-container {
+            margin-bottom: 15px;
+            text-align: right;
+            font-weight: bold;
+            color: #cbd5e1;
+        }
+        
+        .timer-bar-bg {
+            background: #334155;
+            height: 6px;
+            border-radius: 3px;
+            margin-top: 5px;
+            overflow: hidden;
+        }
+
+        .timer-bar {
+            height: 100%;
+            background: linear-gradient(to right, #10b981, #f59e0b, #ef4444);
+            width: 100%;
+            transition: width 1s linear;
+        }
+
+        /* Medallas */
+        .medals-box {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+            font-size: 2rem;
+            min-height: 40px;
+        }
+
+        .medal {
+            animation: pop 0.5s ease-out;
+        }
+
+        @keyframes pop {
+            0% { transform: scale(0); }
+            80% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        /* Pantallas de Estado */
+        .screen {
+            display: none;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        .btn-large {
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 25px;
+            text-transform: uppercase;
+            transition: background 0.3s;
+        }
+
+        .btn-large:hover {
+            background: #4f46e5;
+        }
+
+        .game-over-title {
+            color: var(--incoherente);
+            font-size: 3rem;
+            margin-bottom: 20px;
+            font-weight: 900;
+            letter-spacing: 3px;
+        }
+
+        .victory-title {
+            color: var(--coherente);
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        .results-summary {
+            background: #0f172a;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px auto;
+            max-width: 500px;
+            text-align: left;
+            line-height: 1.8;
+            border: 1px solid #334155;
+        }
+
+        /* Llamada especial del gerente en GameOver */
+        .manager-call-box {
+            background: #7f1d1d;
+            border: 2px dashed #f87171;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px auto;
+            max-width: 600px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #fee2e2;
+            display: none;
+            animation: shake 0.5s ease-in-out infinite;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-2px); }
+            75% { transform: translateX(2px); }
+        }
+
+        /* Estilo para destacar el indicador roto en GameOver */
+        .metric-critical-trigger {
+            background: rgba(239, 68, 68, 0.2) !important;
+            border: 2px solid var(--incoherente) !important;
+            animation: pulse-border 1.5s infinite ease-in-out;
+        }
+
+        @keyframes pulse-border {
+            0%, 100% { border-color: var(--incoherente); box-shadow: 0 0 5px rgba(239, 68, 68, 0.4); }
+            50% { border-color: #fca5a5; box-shadow: 0 0 15px rgba(239, 68, 68, 0.8); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div id="start-screen" class="screen active">
+            <h1>Coherencia Total: Equipos Inteligentes</h1>
+            
+            <div class="author-box">
+                <strong>Autor:</strong> Hugo Ernesto Martínez Granados &nbsp;|&nbsp; <strong>Contacto:</strong> hmartinez.sv@gmail.com
+            </div>
+
+            <p style="margin-top:20px; font-size:1.1rem; color:#94a3b8;">
+                Bienvenido al simulador de alta fidelidad organizativa. Deberás enfrentarte a 20 situaciones de liderazgo real extraídas de entornos corporativos complejos. 
+            </p>
+            <p style="margin-top:10px; color:#94a3b8;">
+                Mantén tus métricas bajo control, busca respuestas coherentes y gestiona tu estrés energético. Tienes 2 minutos por decisión. ¡Cuidado con dejar caer la productividad!
+            </p>
+            <div class="breathing-box" style="margin-top:30px;">
+                <div class="breathing-circle"></div>
+            </div>
+            <button class="btn-large" onclick="startGame()">Iniciar Simulación</button>
+        </div>
+
+        <div id="game-screen" class="screen">
+            <h1>Coherencia Total: Equipos Inteligentes</h1>
+            
+            <div class="dashboard">
+                <div class="metric-card">
+                    <div class="metric-title">Productividad</div>
+                    <div class="metric-value" id="val-prod">50%</div>
+                    <div class="progress-bar-container">
+                        <div id="bar-prod" class="progress-bar" style="background-color: var(--accent);"></div>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-title">Estrés</div>
+                    <div class="metric-value" id="val-estres">20%</div>
+                    <div class="progress-bar-container">
+                        <div id="bar-estres" class="progress-bar" style="background-color: var(--coherente);"></div>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-title">Coherencia</div>
+                    <div class="metric-value" id="val-coherencia">50%</div>
+                    <div class="progress-bar-container">
+                        <div id="bar-coherencia" class="progress-bar" style="background-color: var(--coherente);"></div>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-title">Progreso</div>
+                    <div class="metric-value" id="game-progress">1 / 20</div>
+                </div>
+            </div>
+
+            <div class="timer-container">
+                Tiempo Restante: <span id="timer-text">120</span>s
+                <div class="timer-bar-bg">
+                    <div id="timer-bar" class="timer-bar"></div>
+                </div>
+            </div>
+
+            <div class="breathing-box">
+                <div class="breathing-circle"></div>
+            </div>
+
+            <div class="situation-panel">
+                <div class="character-badge" id="char-badge">Personaje</div>
+                <div class="situation-text" id="sit-text">Cargando situación...</div>
+            </div>
+
+            <div class="options-list" id="options-container"></div>
+            <div class="medals-box" id="medals-container"></div>
+        </div>
+
+        <div id="tactic-screen" class="screen">
+            <div class="panel-title" style="color: var(--coherente);">⚡ Táctica de Maestro Aplicada ⚡</div>
+            <p style="color:#94a3b8; margin-bottom: 20px; font-size: 1.1rem;">¡Excelente decisión! Tu respuesta ha estabilizado el ecosistema energético del equipo. Aquí está el fundamento de tu acción:</p>
+            
+            <div class="situation-panel" style="border-left-color: var(--coherente); background: rgba(16, 185, 129, 0.05); text-align: left;">
+                <div id="tactic-explanation" style="font-size: 1.2rem; line-height: 1.7; color: #f8fafc;">
+                    Explicación de la táctica...
+                </div>
+            </div>
+            
+            <button class="btn-large" onclick="nextAfterFeedback()">Continuar Simulación</button>
+        </div>
+
+        <div id="consequence-screen" class="screen">
+            <div class="panel-title" id="consequence-title" style="color: var(--incoherente);">⚠️ Impacto de la Incoherencia ⚠️</div>
+            <p style="color:#94a3b8; margin-bottom: 20px; font-size: 1.1rem;">Esta acción ha generado fricción o desalineación en la energía del equipo. Analiza el impacto de la decisión:</p>
+            
+            <div class="situation-panel" id="consequence-panel-box" style="border-left-color: var(--incoherente); background: rgba(239, 68, 68, 0.05); text-align: left;">
+                <div id="consequence-explanation" style="font-size: 1.2rem; line-height: 1.7; color: #f8fafc;">
+                    Explicación del resultado negativo...
+                </div>
+            </div>
+            
+            <button class="btn-large" style="background-color: #475569;" onclick="nextAfterFeedback()">Avanzar y Corregir</button>
+        </div>
+
+        <div id="gameover-screen" class="screen">
+            <div class="game-over-title">JUEGO TERMINADO</div>
+            <h2 id="gameover-message" style="margin-bottom:25px; color:#cbd5e1; font-weight: normal; font-style: italic;">Mensaje</h2>
+            
+            <div id="manager-call" class="manager-call-box">
+                📞 LLAMADA DEL GERENTE: "Arreglas esto o puedes conseguir otro trabajo."
+            </div>
+
+            <p style="color:#94a3b8; margin-bottom: 15px;">El balance del equipo inteligente ha colapsado. Estado de los indicadores:</p>
+            
+            <div class="dashboard" style="max-width: 700px; margin: 0 auto 25px auto;">
+                <div class="metric-card" id="go-card-prod">
+                    <div class="metric-title">Productividad Final</div>
+                    <div class="metric-value" id="go-val-prod">0%</div>
+                    <div id="go-reason-prod" style="font-size:0.8rem; color:var(--incoherente); display:none; margin-top:5px; font-weight:bold;">¡COLAPSO OPERATIVO!</div>
+                </div>
+                <div class="metric-card" id="go-card-estres">
+                    <div class="metric-title">Estrés Final</div>
+                    <div class="metric-value" id="go-val-estres">0%</div>
+                    <div id="go-reason-estres" style="font-size:0.8rem; color:var(--incoherente); display:none; margin-top:5px; font-weight:bold;">¡BURNOUT TOTAL!</div>
+                </div>
+                <div class="metric-card" id="go-card-coh">
+                    <div class="metric-title">Coherencia Final</div>
+                    <div class="metric-value" id="go-val-coh">0%</div>
+                </div>
+            </div>
+
+            <button class="btn-large" onclick="resetGame()">Reintentar Diagnóstico</button>
+        </div>
+
+        <div id="victory-screen" class="screen">
+            <div class="victory-title">SIMULACIÓN COMPLETADA</div>
+            <h2 id="victory-verdict" style="color: #f59e0b; margin-bottom: 20px; font-size: 1.8rem;">Veredicto Final</h2>
+            
+            <div class="results-summary">
+                <h3>Resumen de Indicadores Estratégicos:</h3>
+                <ul>
+                    <li><strong>Productividad Final:</strong> <span id="res-prod">0%</span></li>
+                    <li><strong>Estrés Final:</strong> <span id="res-estres">0%</span></li>
+                    <li><strong>Coherencia Final:</strong> <span id="res-coh">0%</span></li>
+                    <li style="border-top: 1px solid #334155; margin-top: 10px; padding-top: 10px;">
+                        <strong>Respuestas Coherentes:</strong> <span id="count-c">0</span>
+                    </li>
+                    <li><strong>Respuestas Incoherentes:</strong> <span id="count-i">0</span></li>
+                    <li><strong>Quedarse Callado:</strong> <span id="count-q">0</span></li>
+                    <li><strong>Medallas/Trofeos Conseguidos:</strong> <span id="count-medals">0</span></li>
+                    <li style="font-size:1.2rem; color:var(--accent); margin-top:10px;">
+                        <strong>PUNTAJE FINAL:</strong> <span id="res-score">0</span>
+                    </li>
+                </ul>
+            </div>
+            <button class="btn-large" onclick="resetGame()">Iniciar Nueva Partida</button>
+        </div>
+    </div>
+
+    <script>
+        // BANCO DE DATOS CON EXPLICACIONES COMPLETAS
+        const baseDatosSituaciones = [
+            {
+                id: 1, personaje: "Colaborador",
+                situacion: 'Colaborador: "Este proyecto va retrasado por tu culpa, no estás organizando bien los tiempos del equipo."',
+                coherente: { txt: "“Entiendo tu preocupación por el retraso. Revisemos juntos qué está afectando los tiempos y cómo podemos organizarnos para avanzar mejor.”", p: 5, e: -10, c: 5 },
+                incoherente: { txt: "Le dices con autoridad con furia que él es el verdadero lento y que no sabe trabajar bajo presión.", p: -15, e: 10, c: -10 },
+                callado: { txt: "Te guardas la frustración en completo silencio. El conflicto queda latente, la tensión interna sube y se pierde la alineación.", p: -3, e: 6, c: -15 },
+                tactica: "Hacer una pausa breve. Respirar 3 veces enfocándose en el corazón. Evitar reaccionar defensivamente, escuchar el problema real y responder orientado firmemente hacia la solución conjunta.",
+                r_incoherente: "Reaccionar impulsivamente desde el estrés, escalando el conflicto a nivel personal, rompiendo la confianza mutua y perdiendo el enfoque técnico.",
+                r_callado: "Te guardas la frustración en completo silencio. El conflicto queda latente, la tensión interna sube de forma progresiva, afectando la alineación corporativa."
+            },
+            {
+                id: 2, personaje: "Supervisor",
+                situacion: 'Supervisor: "El reporte mensual de indicadores tiene errores graves de cálculo, arréglalo inmediatamente."',
+                coherente: { txt: "“Gracias por señalar. Voy a revisar los cálculos inmediatamente y corregir el reporte para asegurar que la información quede precisa.”", p: 5, e: -10, c: 5 },
+                incoherente: { txt: "“El sistema informático falló y no es mi responsabilidad revisar cada detalle.”", p: -15, e: 10, c: -10 },
+                callado: { txt: "Bajas la cabeza y no dices nada. La insatisfacción carcome tu bienestar y el error operativo se estanca.", p: -3, e: 6, c: -15 },
+                tactica: "Hacer una pausa breve y respirar profundamente 3 veces. Evitar justificarse o reaccionar impulsivamente; revisar objetivamente el error técnico centrándose de inmediato en corregir y prevenir.",
+                r_incoherente: "Buscar culpables externos o escudarse en herramientas tecnológicas destruye la rendición de cuentas, deteriorando la credibilidad frente a tus supervisores.",
+                r_callado: "El silencio sumiso incrementa el resentimiento interno de forma pasiva y permite que el error operativo se estanque momentáneamente."
+            },
+            {
+                id: 3, personaje: "Cliente",
+                situacion: 'Cliente: "¡Exijo una solución técnica inmediata a este problema o cancelar el contrato ahora mismo!"',
+                coherente: { txt: "“Gracias por compartir tu opinión. Me gustaría entender qué aspectos consideras que deberíamos revisar o ajustar.”", p: 5, e: -10, c: 5 },
+                incoherente: { txt: "“Lea las cláusulas de rescisión del contrato si así lo desea.”", p: -15, e: 10, c: -10 },
+                callado: { txt: "Te quedas paralizado escuchando los reclamos sin emitir palabra. El cliente se enfurece más por la apatía.", p: -3, e: 6, c: -15 },
+                tactica: "Mantener la calma bajo la presión crítica del cliente. Escuchar activamente sin interrumpir, validar su frustración situacional y redirigir la conversación hacia un diagnóstico técnico conjunto estructurado.",
+                r_incoherente: "Responder de manera fría o legalista desafiando al cliente en crisis rompe el vínculo comercial de forma definitiva y acelera la pérdida de la cuenta.",
+                r_callado: "La parálisis por apatía o miedo es interpretada por el cliente como indiferencia absoluta ante su problema, escalando la tensión interna del entorno."
+            },
+            {
+                id: 4, personaje: "Compañero",
+                situacion: 'Compañero: "No estoy para nada de acuerdo con los nuevos criterios de éxito que definiste para el área."',
+                coherente: { txt: "“Te propongo que revisemos juntos la visión compartida y qué comportamientos específicos crean excelencia.”", p: 5, e: -10, c: 5 },
+                incoherente: { txt: "Dices tajantemente que tú eres el encargado del diseño y las reglas se cumplen sin chistar.", p: -15, e: 10, c: -10 },
+                callado: { txt: "Ignoras por completo su comentario y cambias de tema. La discrepancia se vuelve resentimiento oculto.", p: -3, e: 6, c: -15 },
+                tactica: "Fomentar la co-creación y el alineamiento normativo. Invitar al compañero a revisar los criterios desde la perspectiva de los resultados del equipo, transformando la discrepancia en optimización colectiva.",
+                r_incoherente: "Imponer directrices por mero estatus jerárquico anula la colaboración interdepartamental, levantando barreras de ego que dañan la integración organizativa.",
+                r_callado: "Evadir el disenso sembrando el vacío genera desalineación y acumula fricciones sutiles en los canales de comunicación."
+            },
+            {
+                id: 5, personaje: "Colaborador",
+                situacion: 'Colaborador: "Volví a enviar el pedido al cliente equivocado por un descuido mío."',
+                coherente: { txt: "“Gracias por informar con honestidad. Revisemos cómo solucionar el envío y qué podemos ajustar para evitar que vuelva a pasar.”", p: 5, e: -10, c: 5 },
+                incoherente: { txt: "“Eres un incompetente y siempre cometes los mismos fallos tontos.”", p: -15, e: 10, c: -10 },
+                callado: { txt: "Corriges tú mismo el error en silencio sin decirle nada al colaborador para evitar confrontaciones.", p: -3, e: 6, c: -15 },
+                tactica: "Agradecer la honestidad inmediata para mantener e incrementar la seguridad psicológica del equipo. Corregir el impacto operativo al instante y codiseñar un protocolo de doble check preventivo.",
+                r_incoherente: "Atacar la identidad o valía del colaborador mediante insultos liquida por completo la seguridad psicológica, provocando que en el futuro los errores se oculten con mentiras.",
+                r_callado: "Asumir la carga operativa ajena en silencio desgasta los filtros del líder y pospone el desarrollo formativo del colaborador."
+            },
+            {
+                id: 6, personaje: "Colaborador",
+                situacion: 'Colaborador: "Ya terminé de corregir la información de los clientes que me señalaste previamente."',
+                coherente: { txt: "“Excelente trabajo corrigiendo la información de los clientes. Eso mejora la precisión y facilita el trabajo del equipo. Gracias por actuar tan rápido y con responsabilidad.”", p: 5, e: -10, c: 5 },
+                incoherente: { txt: "“Espero que esta vez sí esté bien.”", p: -15, e: 10, c: -10 },
+                callado: { txt: "Asientes vagamente con la cabeza, sin emitir ningún comentario de validación u optimización.", p: -3, e: 6, c: -15 },
+                tactica: "Refuerzo positivo específico y oportuno. Validar los comportamientos responsables del colaborador de forma clara para consolidar el hábito de la excelencia y la agilidad dentro de la organización.",
+                r_incoherente: "Lanzar comentarios sarcásticos o desconfiados extingue la motivación del colaborador por entregar tareas bien hechas, tiñendo el ambiente de hostilidad sutil.",
+                r_callado: "Omitir la validación del esfuerzo cumplido transmite indiferencia, restándole dinamismo y compromiso al flujo del equipo."
+            },
+            {
+                id: 7, personaje: "Compañero",
+                situacion: 'Compañero: "¿Escuchaste el rumor de que van a recortar presupuesto en nuestra área por mala gestión?"',
+                coherente: { txt: "“He escuchado comentarios, pero prefiero enfocarme en información confirmada y en cómo podemos seguir aportando buenos resultados al área.”", p: 5, e: -10, c: 5 },
+                incoherente: { txt: "“Lo escuché y esto seguro es culpa de la gerencia que es ineficiente.”", p: -15, e: 10, c: -10 },
+                callado: { txt: "Escuchas todo el chisme en absoluto silencio sin validar ni desmentir la información recibida.", p: -3, e: 6, c: -15 },
+                tactica: "Filtro de veracidad y enfoque de energía. Neutralizar proactivamente el avance de rumores destructivos redirigiendo la atención del equipo exclusivamente hacia los datos confirmados y la productividad.",
+                r_incoherente: "Alimentar el chisme validando teorías conspirativas contra la gerencia siembra paranoia colectiva, dinamitando la lealtad y el orden sistémico de la organización.",
+                r_callado: "Validar con tu silencio pasivo la propagación de rumores permite que la incertidumbre de pasillo siga sumando estrés al ecosistema."
+            },
+            {
+                id: 8, personaje: "Colaborador",
+                situacion: 'Colaborador: "No tengo claras cuáles son mis metas exactas para este trimestre, ando muy perdido."',
+                coherente: { txt: "“Perfecto, aclaremos tus prioridades. Definamos juntos cuáles son tus metas principales...”. Te sientas a redactar los objetivos SMART en una página.", p: 5, e: -10, c: 5 },
+                incoherente: { txt: "Le entregas un manual institucional de 80 páginas y le ordenas de mala gana que ahí busque sus funciones.", p: -15, e: 10, c: -10 },
+                callado: { txt: "Le dices de forma evasiva que luego ven eso porque estás sumamente ocupado con tus pendientes.", p: -3, e: 6, c: -15 },
+                tactica: "Establecer claridad predictiva. Dedicar tiempo ejecutivo a explicar los objetivos bajo la metodología SMART, eliminando la ambigüedad y reduciendo la ansiedad laboral.",
+                r_incoherente: "Saturar al colaborador con manuales densos para desentenderte del problema duplica su confusión operativa, destruyendo la agilidad y aumentando el margen de error.",
+                r_callado: "Postergar de manera evasiva la clarificación de metas mantiene al colaborador operando a ciegas, restándole eficiencia a los procesos."
+            },
+            {
+                id: 9, personaje: "Supervisor",
+                situacion: 'Supervisor: "El equipo se nota sumamente tenso y disperso antes de iniciar esta junta clave."',
+                coherente: { txt: "Guías un ejercicio grupal de 3 minutos de respiración lenta 5x5 y enfoque consciente en el corazón.", p: 5, e: -10, c: 5 },
+                incoherente: { txt: "Les exiges a gritos que dejen sus problemas afuera y muestren una actitud ganadora por la fuerza.", p: -15, e: 10, c: -10 },
+                callado: { txt: "Inicias la junta ignorando por completo el ambiente pesado, leyendo directo los datos de la presentación.", p: -3, e: 6, c: -15 },
+                tactica: "Coherencia cardíaca colectiva. Sincronizar el ritmo biológico del equipo a través de un ejercicio de respiración rítmica guiada para optimizar las funciones cognitivas superiores y mitigar la dispersión.",
+                r_incoherente: "Exigir motivación artificial mediante regaños o gritos acentúa la respuesta de huida o pelea de las amígdalas de tu equipo, bloqueando su capacidad de análisis crítico.",
+                r_callado: "Ignorar la pesadez ambiental arrastra la dispersión energética a lo largo de los temas de la agenda, mermando sutilmente la calidad de los acuerdos."
+            },
+            {
+                id: 10, personaje: "Compañero",
+                situacion: 'Compañero: "Olvidé por completo enviarte los insumos técnicos que te prometí para tu presentación de hoy."',
+                coherente: { txt: "“Entiendo, vamos a reorganizarnos rápidamente. Primero voy a centrarme un momento y luego vemos cómo resolver con lo que tenemos.” Te apartas e inicias coherencia.", p: 5, e: -10, c: 5 },
+                incoherente: { txt: "Golpeas fuertemente el escritorio y le gritas que saboteó tu presentación de forma malintencionada.", p: -15, e: 10, c: -10 },
+                callado: { txt: "Te aguantas el coraje en silencio, pones mala cara y te retiras a resolver el problema tú solo en aislamiento.", p: -3, e: 6, c: -15 },
+                tactica: "Autorregulación ante imprevistos graves. Realizar una pausa interna para frenar el secuestro amigdalino provocado por la frustración externa, asegurando una resolución de problemas objetiva y sin drama.",
+                r_incoherente: "Explotar con ira acusando falsamente de sabotaje quiebra las relaciones interpersonales de forma permanente y dispersa la energía necesaria para salvar la presentación.",
+                r_callado: "Reprimir internamente el impacto emocional genera tensión acumulada y limita la colaboración inmediata para resolver la contingencia."
+            },
+            {
+                id: 11, personaje: "Colaborador",
+                situacion: 'Colaborador: "Me equivoqué al dar el precio al cliente y ahora exige que respetemos ese descuento."',
+                coherente: { txt: "“Gracias por informar rápidamente. Revisemos el impacto del error y veamos cuál es la mejor solución para el cliente y para la empresa.”", p: 5, e: -10, c: 5 },
+                incoherente: { txt: "Le dices que es un descuidado absoluto y que él pagará la diferencia económica de su propio salario.", p: -15, e: 10, c: -10 },
+                callado: { txt: "Asumes el costo financiero del error en silencio sin realizar ninguna retroalimentación al colaborador.", p: -3, e: 6, c: -15 },
+                tactica: "Gestión objetiva del error operativo. Separar radicalmente la valía intrínseca de la persona de la equivocación cometida, evaluando el impacto comercial real y blindando el proceso a futuro.",
+                r_incoherente: "Amenazar con descuentos salariales ilegales o culpar desmesuradamente genera terror operativo, destruyendo la iniciativa del personal y motivando la fuga de talento.",
+                r_callado: "Absorber la equivocación sin dar retroalimentación formativa dilata el ciclo de aprendizaje y añade fricción silenciosa a las métricas del área."
+            },
+            {
+                id: 12, personaje: "Compañero",
+                situacion: 'Compañero: "Vengo agotado, frustrado y con ganas de renunciar por el pésimo ambiente de la otra oficina."',
+                coherente: { txt: "Realizas el ejercicio de la cremallera discretamente y respondes: “Entiendo que estés muy agotado. Hagamos una pausa para respirar y luego vemos cómo manejarlo.”", p: 5, e: -10, c: 5 },
+                incoherente: { txt: "Te dejas contagiar por su estado y comienzas a quejarte con él sobre lo terrible que es trabajar aquí.", p: -15, e: 10, c: -10 },
+                callado: { txt: "Te quedas sentado viendo cómo se queja, absorbiendo toda la pesadez mental sin decir una sola palabra.", p: -3, e: 6, c: -15 },
+                tactica: "Técnica de la Cremallera / Blindaje energético. Proteger tu propio balance homeostático mediante la neutralidad consciente, escuchando empáticamente sin absorber o mimetizar la carga emocional negativa externa.",
+                r_incoherente: "Mimetizarte con la queja estéril crea cámaras de eco negativas dentro de la oficina, amplificando el estrés corporativo y mermando el enfoque estratégico.",
+                r_callado: "Actuar como receptor pasivo de descargas emocionales sin un blindaje consciente satura tus filtros mentales, elevando de forma invisible tus niveles de fatiga."
+            },
+            {
+                id: 13, personaje: "Supervisor",
+                situacion: 'Supervisor: "Sé que te prometí un descanso este fin de semana, pero surgió una emergencia y debes venir."',
+                coherente: { txt: "Expresas con claridad y respeto tu necesidad de balance, sugiriendo un acuerdo de compensación inmediato.", p: 5, e: -10, c: 5 },
+                incoherente: { txt: "Aceptas con furia contenida diciéndole que siempre abusa de tu tiempo y que la empresa es una injusticia.", p: -15, e: 10, c: -10 },
+                callado: { txt: "Aceptas la orden sin decir nada, guardándote el coraje mientras planeas reportarte enfermo el sábado.", p: -3, e: 6, c: -15 },
+                tactica: "Asertividad ejecutiva y límites sanos. Comunicar con firmeza y respeto mutuo los requerimientos de balance personal, abriendo de inmediato un canal formal de negociación estratégica para compensar los esfuerzos extraordinarios.",
+                r_incoherente: "Aceptar protestando de forma agresiva rompe la sintonía profesional con tu supervisor, desgastando tu posicionamiento como solucionador estratégico.",
+                r_callado: "Someterse acumulando resentimiento genera desalineación interna y eleva el nivel de estrés psicológico en tus funciones."
+            },
+            {
+                id: 14, personaje: "Colaborador",
+                situacion: 'Colaborador: "Tengo mucho miedo de proponer mis ideas innovadoras en la reunión de planeación estratégica."',
+                coherente: { txt: "“Tu aportación construye claridad y el equipo valora las propuestas con respeto técnico.”", p: 5, e: -10, c: 5 },
+                incoherente: { txt: "Le comentas que mejor se quede callado, porque la alta gerencia nunca suele aceptar cambios fácilmente.", p: -15, e: 10, c: -10 },
+                callado: { txt: "Solo te encoges de hombros de forma indiferente y no le das ninguna retroalimentación o apoyo.", p: -3, e: 6, c: -15 },
+                tactica: "Fomento activo de la seguridad psicológica. Desmantelar los bloqueos basados en el miedo validando el potencial de la persona, recordándole que la innovación fundamentada robustece el ecosistema de la empresa.",
+                r_incoherente: "Validar e inculcar el miedo institucional mata la innovación en la raíz, convirtiendo a tu equipo en un ente puramente reactivo y desmotivado.",
+                r_callado: "La neutralidad indiferente ante la duda del colaborador estanca el desarrollo de nuevas ideas e incrementa sutilmente la desconexión."
+            },
+            {
+                id: 15, personaje: "Compañero",
+                situacion: 'Compañero: "Acabo de cometer un error notable en la presentación frente a la junta directiva y me siento fatal."',
+                coherente: { txt: "“Tranquilo, todos podemos equivocarnos bajo presión. Respiremos un momento y revisemos qué podemos aprender y cómo fortalecer la próxima presentación.”", p: 5, e: -10, c: 5 },
+                incoherente: { txt: "Le dices en tono de reproche que debió haber ensayado más y que ahora todos quedamos mal ante los jefes.", p: -15, e: 10, c: -10 },
+                callado: { txt: "Miras hacia otro lado fingiendo que no te diste cuenta de su angustia para evitar un momento incómodo.", p: -3, e: 6, c: -15 },
+                tactica: "Redireccionamiento constructivo post-crisis. Mitigar la parálisis por culpa o vergüenza del colega, induciendo una estabilización nerviosa rápida y promoviendo la extracción objetiva de lecciones aprendidas.",
+                r_incoherente: "Sumar reproches sobre la leche derramada hunde la autoconfianza del colega y fractura la cohesión interna, alimentando un clima de señalamiento mutuo.",
+                r_callado: "Evitar la situación incómoda mediante el distanciamiento pasivo limita la cohesión del equipo en entornos de alta presión."
+            },
+            {
+                id: 16, personaje: "Supervisor",
+                situacion: 'Supervisor: "¿Cuáles fueron las lecciones aprendidas de la crisis operativa que tuvimos la semana pasada?"',
+                coherente: { txt: "“La crisis nos mostró áreas que debemos fortalecer, especialmente en comunicación, seguimiento y coordinación. Ya identificamos acciones para prevenir que vuelva a ocurrir.”", p: 5, e: -10, c: 5 },
+                incoherente: { txt: "Le asegures falsamente que todo está perfecto y que las quejas se debieron a exageraciones de los clientes.", p: -15, e: 10, c: -10 },
+                callado: { txt: "Te quedas mirando tus notas en silencio para evitar que te asignen responsabilidades directas en la crisis.", p: -3, e: 6, c: -15 },
+                tactica: "Transparencia radical y enfoque de mejora continua. Identificar y documentar vulnerabilidades en la cadena operativa de forma madura, transformando los fallos del pasado en planes de acción preventivos.",
+                r_incoherente: "Maquillar la realidad negando las quejas de los clientes ciega el diagnóstico institucional, asegurando que la próxima crisis golpee con el doble de fuerza.",
+                r_callado: "Mantenerse al margen de la conversación por precaución debilita el alineamiento estratégico y frena el ritmo de optimización."
+            },
+            {
+                id: 17, personaje: "Colaborador",
+                situacion: 'Colaborador: "Siento que el trabajo técnico que hago diariamente no tiene un impacto real en las metas."',
+                coherente: { txt: "“Tu trabajo sí tiene impacto. Cada tarea técnica aporta a la calidad, continuidad y resultados del equipo. Revisemos juntos cómo tu aporte conecta con las metas generales.”", p: 5, e: -10, c: 5 },
+                incoherente: { txt: "Le contestas de forma áspera que agradezca que tiene un salario seguro y estable a fin de mes.", p: -15, e: 10, c: -10 },
+                callado: { txt: "Asientes con desgano en silencio y le pides que continúe de inmediato con sus pendientes cotidianos.", p: -3, e: 6, c: -15 },
+                tactica: "Alineación con el Propósito Organizacional. Conectar explícitamente la ejecución de tareas técnicas del colaborador con los macro-objetivos estratégicos, devolviendo el sentido de relevancia y trascendencia al rol.",
+                r_incoherente: "Reducir la relación laboral a un mero intercambio de dinero extirpa el sentido de propósito, mecanizando al colaborador y desplomando los índices de calidad.",
+                r_callado: "No profundizar en la inquietud del colaborador fomenta un desinterés gradual que termina afectando el rendimiento operativo fino."
+            },
+            {
+                id: 18, personaje: "Compañero",
+                situacion: 'Compañero: "El nuevo procedimiento de manufactura es ridículo, yo prefiero seguir haciéndolo a la antigua."',
+                coherente: { txt: "Dialogas sobre el argumento técnico que combate esa creencia limitante para facilitar la adopción del método corporativo.", p: 5, e: -10, c: 5 },
+                incoherente: { txt: "Lo amenazas directamente con reportarlo a recursos humanos si no obedece el nuevo estándar de inmediato.", p: -15, e: 10, c: -10 },
+                callado: { txt: "Dejas que siga trabajando a su vieja manera ignorando los lineamientos corporativos fijados por la empresa.", p: -3, e: 6, c: -15 },
+                tactica: "Gestión de la resistencia al cambio. Mitigar el rechazo cultural mediante el despliegue de argumentos empíricos claros y beneficios técnicos medibles, desarmando sesgos y facilitando una adopción voluntaria.",
+                r_incoherente: "Imponer el cambio mediante amenazas genera obediencia resentida o sabotajes ocultos, rigidizando las posturas e imposibilitando la mejora continua.",
+                r_callado: "Permitir la disparidad de criterios metodológicos en silencio ralentiza la estandarización técnica de los procesos del negocio."
+            },
+            {
+                id: 19, personaje: "Colaborador",
+                situacion: 'Colaborador: "Tuve un error grave en el informe porque asumí que tú habías revisado la sección previa."',
+                coherente: { txt: "Acuerdas formalmente la regla de lenguaje: “No asumimos: preguntamos” y aceptas tu cuota de responsabilidad con honestidad.", p: 5, e: -10, c: 5 },
+                incoherente: { txt: "Le recriminas con enojo que él debió verificar todo por su cuenta y dejar de inventar excusas baratas.", p: -15, e: 10, c: -10 },
+                callado: { txt: "Te guardas la molestia en silencio y colocas una nota negativa en su expediente en absoluto secreto.", p: -3, e: 6, c: -15 },
+                tactica: "Regla de Comunicación de Alta Coherencia. Establecer formalmente el acuerdo operativo de equipo 'No asumimos: preguntamos', erradicando las suposiciones y asumiendo coliderazgo explícito sobre los entregables.",
+                r_incoherente: "Descargar la culpa con agresividad eludiendo tu falta de claridad previa instala una cultura del miedo defensivo, donde nadie quiere asumir la iniciativa de controlar.",
+                r_callado: "Gestionar las inconformidades de forma oculta debilita la confianza mutua y eleva la tensión reactiva dentro del departamento."
+            },
+            {
+                id: 20, personaje: "Supervisor",
+                situacion: 'Supervisor: "Noto que la comunicación entre tu equipo de trabajo y el área de ventas está rota."',
+                coherente: { txt: "“Gracias por señalar. Voy a revisar qué está afectando la comunicación entre ambas áreas y generar acciones para mejorar la coordinación.”", p: 5, e: -10, c: 5 },
+                incoherente: { txt: "Le dices molesto que los de ventas son unos flojos insoportables con los que nadie puede coordinar nada.", p: -15, e: 10, c: -10 },
+                callado: { txt: "Dices con desgano que es normal entre áreas y que no se puede hacer nada para cambio alguno.", p: -3, e: 6, c: -15 },
+                tactica: "Mediación sistémica interdepartamental. Evitar caer en dinámicas tribales de culpar a otras áreas. Comprometerse a realizar una auditoría de procesos y flujos de información para unificar los ecosistemas internos.",
+                r_incoherente: "Atacar destructivamente a otros departamentos fomenta la guerra de silos organizativos, fracturando el flujo de valor general de la compañía.",
+                r_callado: "Normalizar la desconexión entre departamentos cronifica las ineficiencias de comunicación y añade un desgaste progresivo a las tareas cotidianas."
+            },
+            {
+                id: 21, personaje: "Colaborador",
+                situacion: 'Colaborador: "Estoy sumamente estresado, siento que mi cerebro está completamente bloqueado hoy."',
+                coherente: { txt: "Le enseñas y guías a realizar el ejercicio de marcha cruzada o postura de cerebro completo por un minuto.", p: 5, e: -10, c: 5 },
+                incoherente: { txt: "Le dices de forma tajante que tome tres tazas de café cargado y se ponga a trabajar mucho más duro.", p: -15, e: 10, c: -10 },
+                callado: { txt: "Le dices con frialdad que regrese a su puesto y que vea cómo resuelve su saturación mental él solo.", p: -3, e: 6, c: -15 },
+                tactica: "Kinesiología Aplicada y Balance Cerebral. Guiar al colaborador a realizar ejercicios cinéticos (marcha cruzada o posturas hemisféricas integradas) para disolver el bloqueo de procesamiento cognitivo provocado por el estrés agudo.",
+                r_incoherente: "Saturar un sistema nervioso colapsado con sobreestimulación química (cafeína) y presión psicológica agrava el burnout, destruyendo la calidad técnica del entregable.",
+                r_callado: "Dejar al colaborador lidiando solo con su saturación prolonga el estado de bloqueo cognitivo, mermando paulatinamente el avance."
+            },
+            {
+                id: 22, personaje: "Compañero",
+                situacion: 'Compañero: "Oye, ¿viste la manera tan grosera en que el director le llamó la atención al supervisor de área?"',
+                coherente: { txt: "“Sí noté tensión en la situación, pero prefiero no sacar conclusiones sin conocer el contexto. Lo importante es enfocarnos en soluciones.”", p: 5, e: -10, c: 5 },
+                incoherente: { txt: "Te enganchas de inmediato en el morbo y exiges detalles para criticar duramente al director de operaciones.", p: -15, e: 10, c: -10 },
+                callado: { txt: "Escuchas con atención morbosa todo el relato y luego te retiras con una sensación interna de miedo.", p: -3, e: 6, c: -15 },
+                tactica: "Neutralidad ante disfunciones jerárquicas externas. Mantener una distancia crítica frente al morbo y al drama de oficina, priorizando la estabilidad y el enfoque de energía dentro de tu propia zona de influencia directa.",
+                r_incoherente: "Participar en la lapidación verbal de los directores destruye la lealtad sistémica, dispersando la energía ejecutiva en dinámicas de pasillo improductivas.",
+                r_callado: "Asimilar de forma pasiva narrativas hostiles externas siembra micro-dosis de desconfianza en tus propios filtros organizacionales."
+            },
+            {
+                id: 23, personaje: "Supervisor",
+                situacion: 'Supervisor: "Necesito que capacites al nuevo personal de inmediato, pero no hay presupuesto para talleres."',
+                coherente: { txt: "“Entiendo la limitación. Voy a organizar una capacitación práctica utilizando los recursos disponibles para asegurar una integración efectiva.”", p: 5, e: -10, c: 5 },
+                incoherente: { txt: "Te quejas amargamente ante él de que sin presupuesto formal es totalmente imposible transferir conocimientos.", p: -15, e: 10, c: -10 },
+                callado: { txt: "Aceptas la instrucción de mala gana y dejas al nuevo personal abandonado a su suerte en el piso operativo.", p: -3, e: 6, c: -15 },
+                tactica: "Optimización y Capitalización del Conocimiento Interno. Diseñar dinámicas estructuradas de capacitación práctica en el puesto (On-the-Job Training), maximizando el capital intelectual existente sin depender de recursos financieros externos.",
+                r_incoherente: "Adoptar una postura rígida bloqueada en la escasez monetaria frena el desarrollo operativo de la empresa, posicionándote como un perfil no resolutivo.",
+                r_callado: "El acatamiento evasivo sin estructurar una solución metodológica real ralentiza el ritmo de inducción técnica del personal de nuevo ingreso."
+            },
+            {
+                id: 24, personaje: "Colaborador",
+                situacion: 'Colaborador: "Siento que por más que me esfuerzo en este equipo, nadie nota mis aportes diarios."',
+                coherente: { txt: "“Entiendo cómo te sientes. He notado tu esfuerzo diario, especialmente en la manera en que apoyas los procesos y mantienes la calidad.”", p: 5, e: -10, c: 5 },
+                incoherente: { txt: "Le respondes con ironía que a ti tampoco nadie te felicita y que así de dura es la vida corporativa.", p: -15, e: 10, c: -10 },
+                callado: { txt: "Ignoras por completo su sentir y le pides con frialdad que te entregue el reporte de actividades semanales.", p: -3, e: 6, c: -15 },
+                tactica: "Depósitos en la Cuenta Bancaria Emocional. Realizar un reconocimiento explícito, detallado y sincero del trabajo silencioso pero fundamental del colaborador, revirtiendo su aislamiento y potenciando la lealtad.",
+                r_incoherente: "Competir sarcásticamente en frustraciones con tu propio personal anula tu rol como pilar de soporte, empujándolos a buscar un ecosistema laboral más sano.",
+                r_callado: "Evadir la necesidad de soporte relacional debilita paulatinamente el sentido de pertenencia y compromiso del colaborador."
+            },
+            {
+                id: 25, personaje: "Compañero",
+                situacion: 'Compañero: "Es completamente imposible cumplir con esta meta de producción semanal con los recursos actuales."',
+                coherente: { txt: "“Entiendo tu preocupación. Revisemos juntos qué obstáculos específicos tenemos y cómo podemos reorganizar prioridades.”", p: 5, e: -10, c: 5 },
+                incoherente: { txt: "Coincides plenamente con él diciendo que la meta está diseñada por locos que no conocen la realidad.", p: -15, e: 10, c: -10 },
+                callado: { txt: "Te encoges de hombros y continúas trabajando bajo la convicción interna de que efectivamente van a fallar.", p: -3, e: 6, c: -15 },
+                tactica: "Desmantelamiento de creencias limitantes. Validar la complejidad de las metas retadoras, pero descomponerlas técnicamente en subprocesos para localizar cuellos de botella específicos y reordenar prioridades operativas.",
+                r_incoherente: "Aliarse con la narrativa del fracaso preconcebido legitima la ineficiencia, creando un clima de autocomplacencia donde la baja productividad es aceptada sin luchar.",
+                r_callado: "Permitir que la convicción silenciosa de ineficiencia se instale en el entorno condiciona sutilmente el desempeño del área."
+            },
+            {
+                id: 26, personaje: "Colaborador",
+                situacion: 'Colaborador: "Tuve un fuerte altercado verbal con un miembro de otra área durante el almuerzo. Me siento muy enojado."',
+                coherente: { txt: "“Entiendo que estés molesto. Antes de actuar o responder, hagamos una pausa para calmarnos y luego revisemos cómo manejarlo.”", p: 5, e: -10, c: 5 },
+                incoherente: { txt: "Le ordenas molesto que vaya inmediatamente a exigir una disculpa o que le grite de vuelta para darse a respetar.", p: -15, e: 10, c: -10 },
+                callado: { txt: "Le dices de forma cortante que ese es un problema personal y que lo arregle fuera del horario de oficina.", p: -3, e: 6, c: -15 },
+                tactica: "Freno Proactivo de Reactividad Emocional. Intervenir deteniendo la escalada reactiva del colaborador. Provocar una descompresión nerviosa consciente mediante una pausa reflexiva previa a tomar cualquier acción correctiva formal.",
+                r_incoherente: "Incitar al colaborador a contratacar en caliente desata batallas campales corporativas, destruyendo la gobernanza e incurriendo en faltas disciplinarias graves.",
+                r_callado: "Etiquetar los roces como meramente privados desatiende la carga tensional que afectará la coordinación técnica en los minutos siguientes."
+            },
+            {
+                id: 27, personaje: "Supervisor",
+                situacion: 'Supervisor: "Tenemos una enorme lista de pendientes urgentes y el equipo no sabe por dónde empezar."',
+                coherente: { txt: "“Primero hagamos una pausa breve para ordenar prioridades. Revisemos cuáles pendientes son críticos y distribuyamos tareas con enfoque.”", p: 5, e: -10, c: 5 },
+                incoherente: { txt: "Les exiges bajo presión que hagan todo al mismo tiempo y que se queden a trabajar horas extras obligatorias.", p: -15, e: 10, c: -10 },
+                callado: { txt: "Dejas que cada quien trabaje en lo que le parezca mejor en silencio sin dar una guía o directriz unificada.", p: -3, e: 6, c: -15 },
+                tactica: "Arquitectura de la Efectividad. Disolver el estado de parálisis por saturación del equipo filtrando drásticamente los pendientes mediante matrices claras de urgencia e importancia, restaurando el enfoque y el orden de ejecución.",
+                r_incoherente: "Exigir velocidad desmedida en todas las variables simultáneamente provoca fatiga extrema, multiplicando los incidentes operativos y reventando el clima interno.",
+                r_callado: "La ausencia de lineamientos unificados fragmenta los esfuerzos operativos, dispersando sutilmente la efectividad."
+            },
+            {
+                id: 28, personaje: "Colaborador",
+                situacion: 'Colaborador: "Lo siento mucho, olvidé registrar los acuerdos técnicos de la última reunión operativa."',
+                coherente: { txt: "“Registrar esos acuerdos era importante porque afecta el seguimiento. Necesitamos corregirlo inmediatamente. Confío en que pondrás más atención.”", p: 5, e: -10, c: 5 },
+                incoherente: { txt: "Le gritas enfrente de todos que por su culpa la reunión no sirvió para nada y que es un desorganizado total.", p: -15, e: 10, c: -10 },
+                callado: { txt: "Suspiras con fastidio en silencio y haces el registro tú mismo sin realizar ninguna observación preventiva.", p: -3, e: 6, c: -15 },
+                tactica: "Redireccionamiento Efectivo al Minuto. Ejecutar una corrección enfocada de forma quirúrgica en los hechos puros y el impacto real del descuido, reafirmando inmediatamente después el valor y la confianza en la persona para cerrar constructivamente el ciclo.",
+                r_incoherente: "Humillar públicamente al colaborador destruye la cohesión grupal e infunde un clima de parálisis defensiva, donde nadie quiere asumir responsabilidades de soporte.",
+                r_callado: "Asumir la tarea omitida de manera pasiva sobrecarga la agenda gerencial e impide el desarrollo del hábito preventivo del colaborador."
+            },
+            {
+                id: 29, personaje: "Compañero",
+                situacion: 'Compañero: "Siento mucha tensión acumulada en el cuello y la espalda baja por el exceso de trabajo en la PC."',
+                coherente: { txt: "Le sugieres realizar un estiramiento de coronilla o una limpieza neurolinfática rápida durante 2 minutos.", p: 5, e: -10, c: 5 },
+                incoherente: { txt: "Le dices que se aguante, que todos aquí estamos igual de adoloridos y que el trabajo no se puede detener.", p: -15, e: 10, c: -10 },
+                callado: { txt: "Lo miras con lástima pero guardas silencio absoluto volviendo a concentrarte rápido en tu propio monitor.", p: -3, e: 6, c: -15 },
+                tactica: "Coherencia Energética Corporal. Promover micro-pausas biomecánicas y reflexología neurolinfática rápida para disipar la desorganización física acumulada en entornos sedentarios, recuperando vitalidad y foco cerebral.",
+                r_incoherente: "Validar un entorno que ignora el bienestar biológico incrementa el mal humor crónico, la fatiga aguda y el ausentismo por salud.",
+                r_callado: "Ignorar la carga corporal del entorno insensibiliza los canales interpersonales, sumando rigidez mental y tensional a la jornada."
+            },
+            {
+                id: 30, personaje: "Supervisor",
+                situacion: 'Supervisor: "Las circunstancias externas del mercado cambiaron y el panorama de la empresa luce muy difícil."',
+                coherente: { txt: "Reúnes al equipo y declaras en coherence: “Este estado de calma está disponible en nosotros, no depende de afuera”.", p: 5, e: -10, c: 5 },
+                incoherente: { txt: "Entras en pánico y les transmites con angustia que probablemente haya despidos masivos si las cosas no mejoran.", p: -15, e: 10, c: -10 },
+                callado: { txt: "Evitas por completo hablar de la situación del mercado, fingiendo de forma incómoda que todo marcha a la perfección.", p: -3, e: 6, c: -15 },
+                tactica: "Dirección consciente desde el corazón. Ejercer el rol de 'Testigo' estable frente a la incertidumbre del mercado. Mitigar el pánico colectivo transmitiendo que el centro operativo del equipo depende de su propia autorregulación y no de las variables exteriores.",
+                r_incoherente: "Propagar un estrés agudo y un clima de pánico colectivo drena la energía protectora, detonando el autosabotaje, la dispersión total y la parálisis de la operación.",
+                r_callado: "Eludir de forma pasiva las realidades evidentes genera rumores subterráneos, añadiendo incertidumbre e incrementando el estrés latente."
+            }
+        ];
+
+        let situacionesPartida = [];
+        let indiceActual = 0;
+        let productividad = 50;
+        let estres = 20;
+        let coherencia = 50;
+        
+        let respuestasCoherentes = 0;
+        let respuestasIncoherentes = 0;
+        let respuestasCallado = 0;
+        let medallas = 0;
+
+        let tiempoRestante = 120;
+        let intervaloTimer = null;
+        let managerCallTriggered = false;
+
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playSound(type) {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            if (type === 'success') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); 
+                osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1); 
+                gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.3);
+            } else if (type === 'error') {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(160, audioCtx.currentTime);
+                osc.frequency.linearRampToValueAtTime(90, audioCtx.currentTime + 0.4);
+                gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.4);
+            } else if (type === 'silent') {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(280, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.25);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.25);
+            } else if (type === 'medal') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); 
+                osc.frequency.setValueAtTime(880, audioCtx.currentTime + 0.08); 
+                osc.frequency.setValueAtTime(1174.66, audioCtx.currentTime + 0.16); 
+                gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.6);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.6);
+            }
+        }
+
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function startGame() {
+            productividad = 50;
+            estres = 20;
+            coherencia = 50;
+            indiceActual = 0;
+            respuestasCoherentes = 0;
+            respuestasIncoherentes = 0;
+            respuestasCallado = 0;
+            medallas = 0;
+            managerCallTriggered = false;
+
+            let copiaBanco = [...baseDatosSituaciones];
+            copiaBanco.sort(() => Math.random() - 0.5);
+            situacionesPartida = copiaBanco.slice(0, 20);
+
+            updateDashboardUI();
+            document.getElementById('medals-container').innerHTML = '';
+            
+            showScreen('game-screen');
+            loadSituation();
+        }
+
+        function loadSituation() {
+            if (indiceActual >= 20) {
+                endGameVictory();
+                return;
+            }
+
+            document.getElementById('game-progress').innerText = `${indiceActual + 1} / 20`;
+
+            const sit = situacionesPartida[indiceActual];
+            document.getElementById('char-badge').innerText = sit.personaje;
+            document.getElementById('sit-text').innerText = sit.situacion;
+
+            const opsContainer = document.getElementById('options-container');
+            opsContainer.innerHTML = '';
+
+            let opcionesArr = [
+                { type: 'C', data: sit.coherente },
+                { type: 'I', data: sit.incoherente },
+                { type: 'Q', data: sit.callado }
+            ];
+            
+            opcionesArr.sort(() => Math.random() - 0.5);
+
+            opcionesArr.forEach(op => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = op.data.txt;
+                btn.onclick = () => handleAnswer(op.type, op.data);
+                opsContainer.appendChild(btn);
+            });
+
+            tiempoRestante = 120;
+            document.getElementById('timer-text').innerText = tiempoRestante;
+            document.getElementById('timer-bar').style.width = '100%';
+            
+            clearInterval(intervaloTimer);
+            intervaloTimer = setInterval(() => {
+                tiempoRestante--;
+                document.getElementById('timer-text').innerText = tiempoRestante;
+                document.getElementById('timer-bar').style.width = `${(tiempoRestante / 120) * 100}%`;
+
+                if (tiempoRestante <= 0) {
+                    clearInterval(intervaloTimer);
+                    handleAnswer('Q', sit.callado);
+                }
+            }, 1000);
+        }
+
+        function handleAnswer(type, metricsImpact) {
+            clearInterval(intervaloTimer);
+
+            // Modificar indicadores de estado corporativos
+            productividad += metricsImpact.p;
+            coherencia += metricsImpact.c;
+            estres += metricsImpact.e;
+
+            productividad = Math.max(0, Math.min(100, productividad));
+            coherencia = Math.max(0, Math.min(100, coherencia));
+
+            // EVALUACIÓN DE LAS REGLAS DE NEGOCIO SEGÚN LA PRODUCTIVIDAD
+            if (productividad >= 21 && productividad <= 30) {
+                estres = Math.max(estres, 60);
+            } else if (productividad >= 11 && productividad <= 20) {
+                estres = Math.max(estres, 75);
+            } else if (productividad <= 10) {
+                estres = Math.max(estres, 90);
+            }
+
+            // REGLA: Activar la advertencia si la productividad alcanza el 20% o menos
+            if (productividad <= 20) {
+                managerCallTriggered = true;
+            }
+
+            estres = Math.max(0, Math.min(100, estres));
+
+            updateDashboardUI();
+
+            // Evaluar si se causa un Game Over instantáneo
+            if (estres >= 100 || productividad <= 0) {
+                triggerGameOver();
+                return;
+            }
+
+            const situacionActual = situacionesPartida[indiceActual];
+
+            if (type === 'C') {
+                respuestasCoherentes++;
+                playSound('success');
+                
+                if (respuestasCoherentes % 5 === 0) {
+                    medallas++;
+                    playSound('medal');
+                    const medalSpan = document.createElement('span');
+                    medalSpan.className = 'medal';
+                    medalSpan.innerText = '🏆';
+                    document.getElementById('medals-container').appendChild(medalSpan);
+                }
+
+                document.getElementById('tactic-explanation').innerText = situacionActual.tactica;
+                showScreen('tactic-screen');
+
+            } else {
+                if (type === 'I') {
+                    respuestasIncoherentes++;
+                    playSound('error');
+                    document.getElementById('consequence-title').innerText = "⚠️ Impacto de la Incoherencia ⚠️";
+                    document.getElementById('consequence-panel-box').style.borderLeftColor = "var(--incoherente)";
+                    document.getElementById('consequence-explanation').innerText = situacionActual.r_incoherente;
+                } else {
+                    respuestasCallado++;
+                    playSound('silent');
+                    document.getElementById('consequence-title').innerText = "🤫 Consecuencia del Silencio Evasivo 🤫";
+                    document.getElementById('consequence-panel-box').style.borderLeftColor = "var(--callado)";
+                    document.getElementById('consequence-explanation').innerText = situacionActual.r_callado;
+                }
+                
+                showScreen('consequence-screen');
+            }
+        }
+
+        function nextAfterFeedback() {
+            indiceActual++;
+            showScreen('game-screen');
+            loadSituation();
+        }
+
+        function updateDashboardUI() {
+            document.getElementById('val-prod').innerText = `${productividad}%`;
+            document.getElementById('bar-prod').style.width = `${productividad}%`;
+            document.getElementById('bar-prod').style.backgroundColor = productividad <= 20 ? 'var(--incoherente)' : 'var(--accent)';
+
+            document.getElementById('val-estres').innerText = `${estres}%`;
+            document.getElementById('bar-estres').style.width = `${estres}%`;
+            document.getElementById('bar-estres').style.backgroundColor = estres >= 75 ? 'var(--incoherente)' : 'var(--coherente)';
+
+            document.getElementById('val-coherencia').innerText = `${coherencia}%`;
+            document.getElementById('bar-coherencia').style.width = `${coherencia}%`;
+        }
+
+        function triggerGameOver() {
+            clearInterval(intervaloTimer);
+            playSound('error');
+
+            document.getElementById('go-val-prod').innerText = `${productividad}%`;
+            document.getElementById('go-val-estres').innerText = `${estres}%`;
+            document.getElementById('go-val-coh').innerText = `${coherencia}%`;
+
+            document.getElementById('go-card-prod').classList.remove('metric-critical-trigger');
+            document.getElementById('go-card-estres').classList.remove('metric-critical-trigger');
+            document.getElementById('go-reason-prod').style.display = 'none';
+            document.getElementById('go-reason-estres').style.display = 'none';
+            document.getElementById('manager-call').style.display = 'none';
+
+            let mensajePorDefecto = "";
+
+            if (estres >= 100) {
+                document.getElementById('go-card-estres').classList.add('metric-critical-trigger');
+                document.getElementById('go-reason-estres').style.display = 'block';
+                mensajePorDefecto = "Vacaciones forzadas en el hospital por estrés agudo. El equipo ha colapsado emocionalmente.";
+            } else if (productividad <= 0) {
+                document.getElementById('go-card-prod').classList.add('metric-critical-trigger');
+                document.getElementById('go-reason-prod').style.display = 'block';
+                mensajePorDefecto = "¡Estás despedido! La productividad operativa del área ha caído a cero.";
+            }
+
+            // Desplegar la advertencia si se activó por la regla del 20%
+            if (managerCallTriggered) {
+                document.getElementById('manager-call').style.display = 'block';
+            }
+
+            document.getElementById('gameover-message').innerText = mensajePorDefecto;
+            showScreen('gameover-screen');
+        }
+
+        function endGameVictory() {
+            clearInterval(intervaloTimer);
+            const puntajeFinal = respuestasCoherentes - respuestasIncoherentes - respuestasCallado;
+            
+            document.getElementById('res-prod').innerText = `${productividad}%`;
+            document.getElementById('res-estres').innerText = `${estres}%`;
+            document.getElementById('res-coh').innerText = `${coherencia}%`;
+            document.getElementById('count-c').innerText = respuestasCoherentes;
+            document.getElementById('count-i').innerText = respuestasIncoherentes;
+            document.getElementById('count-q').innerText = respuestasCallado;
+            document.getElementById('count-medals').innerText = medallas;
+            document.getElementById('res-score').innerText = puntajeFinal;
+
+            let veredictoText = "";
+            if (medallas <= 1) {
+                veredictoText = '"Tu equipo pide que te cambien"';
+            } else if (medallas === 2) {
+                veredictoText = '"Estrella naciente"';
+            } else if (medallas === 3) {
+                veredictoText = '"Héroe de la gestión de equipos"';
+            } else if (medallas >= 4) {
+                veredictoText = '"Eres parte de un equipo inteligente"';
+            }
+
+            document.getElementById('victory-verdict').innerText = veredictoText;
+            showScreen('victory-screen');
+        }
+
+        function resetGame() {
+            showScreen('start-screen');
+        }
+    </script>
+</body>
+</html>
